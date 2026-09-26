@@ -23,22 +23,22 @@ jobs:
           unzip -q /tmp/gradle.zip -d /opt/gradle
           echo "/opt/gradle/gradle-8.3/bin" >> $GITHUB_PATH
 
-      - name: Show project structure
-        run: find . -not -path './.git/*' | sort | head -80
-
       - name: Generate wrapper
         run: gradle wrapper --gradle-version=8.3 && chmod +x gradlew
 
-      - name: Build APK (with full output)
+      - name: Build APK
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: ./gradlew assembleRelease --no-daemon --info 2>&1 | tail -100
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Check APK exists
+        run: |
+          ls -lh app/build/outputs/apk/release/
+          test -f app/build/outputs/apk/release/app-release.apk && echo "APK READY!" || (echo "APK NOT FOUND!" && exit 1)
 
       - name: Upload APK
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: AliceAgent-APK
           path: app/build/outputs/apk/release/app-release.apk
-          if-no-files-found: warn
           retention-days: 30
