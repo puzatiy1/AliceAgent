@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AliceAgent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#7C6EF5</item>
+        <item name="colorPrimaryVariant">#6456E0</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSurface">#1A1A1D</item>
+        <item name="android:windowBackground">#0F0F10</item>
+        <item name="android:statusBarColor">#1A1A1D</item>
+        <item name="android:navigationBarColor">#1A1A1D</item>
+    </style>
+</resources>
