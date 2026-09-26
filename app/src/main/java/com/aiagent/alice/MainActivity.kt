@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private val GROQ_API_KEY = "gsk_zanzOBJ2Mhk" + "KkWMUHeDxWGdyb3" + "FYYrmb4X2XgyODfV4FigvDQ4u0"
     private val GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
-    private val MODEL = "gemma2-9b-it"
+    private val MODEL = "llama-3.3-70b-versatile"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
