@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#0F0F10">
 
-    <!-- Header -->
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="0dp"
@@ -23,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🤖"
+            android:text="&#x1F916;"
             android:textSize="28sp"
             android:layout_marginEnd="10dp"/>
 
@@ -44,7 +43,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="● онлайн"
+                android:text="&#x25CF; онлайн"
                 android:textColor="#4ADE80"
                 android:textSize="12sp"/>
         </LinearLayout>
@@ -67,7 +66,6 @@
             android:contentDescription="Контакты"/>
     </LinearLayout>
 
-    <!-- Chat messages -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -79,7 +77,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Typing indicator -->
     <TextView
         android:id="@+id/typingIndicator"
         android:layout_width="wrap_content"
@@ -92,7 +89,6 @@
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <!-- Bottom bar -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
@@ -106,7 +102,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Mic button -->
         <ImageButton
             android:id="@+id/micBtn"
             android:layout_width="48dp"
@@ -116,7 +111,6 @@
             android:contentDescription="Голосовой ввод"
             android:layout_marginEnd="8dp"/>
 
-        <!-- Text input -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -133,7 +127,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Напиши или скажи..."
-                android:hintTextColor="#9898A8"
                 android:textColor="#F0F0F2"
                 android:textSize="16sp"
                 android:background="@null"
@@ -150,7 +143,6 @@
                 android:visibility="gone"/>
         </LinearLayout>
 
-        <!-- Send button -->
         <ImageButton
             android:id="@+id/sendBtn"
             android:layout_width="48dp"
