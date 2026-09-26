@@ -29,26 +29,12 @@ jobs:
         run: gradle wrapper --gradle-version=8.3 && chmod +x gradlew
 
       - name: Build APK
-        id: build
-        env:
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: |
-          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee /tmp/build.log
-          BUILD_EXIT=${PIPESTATUS[0]}
-          # Записываем последние 200 строк лога в README
-          echo "# Build Log" > README.md
-          tail -200 /tmp/build.log >> README.md
-          git config user.email "bot@ci.com"
-          git config user.name "CI Bot"
-          git add README.md
-          git commit -m "Build log" || true
-          git push || true
-          exit $BUILD_EXIT
+        run: ./gradlew assembleRelease --no-daemon
 
-      - name: Upload APK
-        if: success()
-        uses: actions/upload-artifact@v4
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: AliceAgent-APK
-          path: app/build/outputs/apk/release/app-release.apk
-          retention-days: 30
+          tag_name: latest
+          name: "ИИ Агент - Скачать APK"
+          files: app/build/outputs/apk/release/app-release.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
