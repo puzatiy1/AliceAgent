@@ -26,9 +26,9 @@ Installing Android SDK Build-Tools 33.0.1 in /usr/local/lib/android/sdk/build-to
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:dataBindingMergeDependencyArtifactsRelease
 > Task :app:generateReleaseResValues
 > Task :app:generateReleaseResources
-> Task :app:dataBindingMergeDependencyArtifactsRelease
 > Task :app:packageReleaseResources
 > Task :app:mergeReleaseResources
 > Task :app:generateReleaseBuildConfig
@@ -45,9 +45,9 @@ Installing Android SDK Build-Tools 33.0.1 in /usr/local/lib/android/sdk/build-to
 > Task :app:mergeReleaseJniLibFolders
 > Task :app:mergeReleaseNativeLibs NO-SOURCE
 > Task :app:stripReleaseDebugSymbols NO-SOURCE
-> Task :app:processReleaseManifestForPackage
 > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:processReleaseManifestForPackage
 > Task :app:desugarReleaseFileDependencies
 > Task :app:checkReleaseDuplicateClasses
 > Task :app:mergeReleaseArtProfile
@@ -82,5 +82,5 @@ w: file:///home/runner/work/AliceAgent/AliceAgent/app/src/main/java/com/aiagent/
 > Task :app:lintVitalRelease
 > Task :app:assembleRelease
 
-BUILD SUCCESSFUL in 1m 28s
+BUILD SUCCESSFUL in 1m 5s
 45 actionable tasks: 45 executed
