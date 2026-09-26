@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Gradle 8.3
+      - name: Install Gradle
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.3-bin.zip -O /tmp/gradle.zip
           unzip -q /tmp/gradle.zip -d /opt/gradle
@@ -31,6 +31,8 @@ jobs:
           chmod +x gradlew
 
       - name: Build Release APK
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: ./gradlew assembleRelease --no-daemon
 
       - name: Upload APK
