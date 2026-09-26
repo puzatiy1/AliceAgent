@@ -17,7 +17,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aiagent.alice.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import okhttp3.*
@@ -36,8 +38,9 @@ class MainActivity : AppCompatActivity() {
     private val httpClient = OkHttpClient()
     private var isListening = false
 
-    // ВАЖНО: Вставь свой API ключ от Anthropic сюда
-    private val API_KEY = "YOUR_ANTHROPIC_API_KEY"
+    private val GROQ_API_KEY = BuildConfig.GROQ_API_KEY
+    private val GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+    private val MODEL = "llama-3.3-70b-versatile"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +51,7 @@ class MainActivity : AppCompatActivity() {
         setupTTS()
         setupSpeechRecognizer()
         setupClickListeners()
-        loadNotes()
 
-        // Приветствие
         addMessage("ИИ Агент", "Привет! Я твой личный ИИ ассистент. Могу отвечать на вопросы, создавать заметки и помогать звонить друзьям. Нажми на микрофон или напиши мне!")
     }
 
@@ -86,14 +87,10 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onResults(results: Bundle?) {
                 val text = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.get(0) ?: return
-                binding.inputField.setText(text)
                 stopListening()
                 sendMessage(text)
             }
-            override fun onError(error: Int) {
-                stopListening()
-                binding.statusText.text = "Нажми для ввода"
-            }
+            override fun onError(error: Int) { stopListening() }
             override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
             override fun onBufferReceived(buffer: ByteArray?) {}
@@ -108,7 +105,6 @@ class MainActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             if (isListening) stopListening() else startListening()
         }
-
         binding.sendBtn.setOnClickListener {
             val text = binding.inputField.text.toString().trim()
             if (text.isNotEmpty()) {
@@ -116,11 +112,9 @@ class MainActivity : AppCompatActivity() {
                 sendMessage(text)
             }
         }
-
         binding.notesBtn.setOnClickListener {
             startActivity(Intent(this, NotesActivity::class.java))
         }
-
         binding.contactsBtn.setOnClickListener {
             startActivity(Intent(this, ContactsActivity::class.java))
         }
@@ -150,37 +144,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendMessage(text: String) {
         addMessage("Вы", text)
-        binding.inputField.setText("")
 
-        // Проверяем команды
         when {
-            text.contains("заметк", ignoreCase = true) && text.contains("запиши", ignoreCase = true) -> {
+            text.contains("запиши", ignoreCase = true) -> {
                 val noteText = text.replace(Regex("запиши|заметку|заметка", RegexOption.IGNORE_CASE), "").trim()
                 saveNote(noteText)
-                val response = "Записал заметку: $noteText"
+                val response = "Записал: $noteText"
                 addMessage("ИИ Агент", response)
                 tts.speak(response, TextToSpeech.QUEUE_FLUSH, null, null)
                 return
             }
             text.contains("позвони", ignoreCase = true) -> {
-                val contactName = text.replace(Regex("позвони|позвон"), "").trim()
-                callContact(contactName)
+                val name = text.replace(Regex("позвони|позвон"), "").trim()
+                callContact(name)
                 return
             }
         }
 
-        // Отправляем в Claude API
-        lifecycleScope.launch {
-            callClaudeAPI(text)
-        }
+        lifecycleScope.launch { callGroqAPI(text) }
     }
 
-    private fun callClaudeAPI(userText: String) {
-        binding.typingIndicator.text = "ИИ Агент печатает..."
+    private suspend fun callGroqAPI(userText: String) {
+        withContext(Dispatchers.Main) { binding.typingIndicator.text = "ИИ Агент печатает..." }
 
         val messagesArray = JSONArray()
-        // Добавляем историю (последние 10 сообщений)
-        val history = messages.takeLast(10).filter { it.sender != "Система" }
+        messagesArray.put(JSONObject().apply {
+            put("role", "system")
+            put("content", "Ты умный голосовой ИИ ассистент, похожий на Алису от Яндекса. Отвечай по-русски, кратко и дружелюбно. Можешь помочь с любыми вопросами.")
+        })
+
+        val history = messages.takeLast(10)
         for (msg in history) {
             val role = if (msg.sender == "Вы") "user" else "assistant"
             messagesArray.put(JSONObject().apply {
@@ -190,17 +183,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         val body = JSONObject().apply {
-            put("model", "claude-sonnet-4-6")
+            put("model", MODEL)
             put("max_tokens", 1000)
-            put("system", "Ты умный голосовой ИИ ассистент, похожий на Алису. Отвечай по-русски, кратко и дружелюбно. Можешь помогать с любыми вопросами.")
             put("messages", messagesArray)
         }
 
         val request = Request.Builder()
-            .url("https://api.anthropic.com/v1/messages")
-            .addHeader("x-api-key", API_KEY)
-            .addHeader("anthropic-version", "2023-06-01")
-            .addHeader("content-type", "application/json")
+            .url(GROQ_URL)
+            .addHeader("Authorization", "Bearer $GROQ_API_KEY")
+            .addHeader("Content-Type", "application/json")
             .post(body.toString().toRequestBody("application/json".toMediaType()))
             .build()
 
@@ -208,21 +199,23 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
                     binding.typingIndicator.text = ""
-                    addMessage("ИИ Агент", "Нет соединения с сервером. Проверь интернет.")
+                    addMessage("ИИ Агент", "Нет соединения. Проверь интернет.")
                 }
             }
-
             override fun onResponse(call: Call, response: Response) {
                 val responseText = response.body?.string() ?: ""
                 runOnUiThread {
                     binding.typingIndicator.text = ""
                     try {
                         val json = JSONObject(responseText)
-                        val reply = json.getJSONArray("content").getJSONObject(0).getString("text")
+                        val reply = json.getJSONArray("choices")
+                            .getJSONObject(0)
+                            .getJSONObject("message")
+                            .getString("content")
                         addMessage("ИИ Агент", reply)
                         tts.speak(reply, TextToSpeech.QUEUE_FLUSH, null, null)
                     } catch (e: Exception) {
-                        addMessage("ИИ Агент", "Ошибка получения ответа.")
+                        addMessage("ИИ Агент", "Ошибка: $responseText")
                     }
                 }
             }
@@ -233,20 +226,14 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("notes", MODE_PRIVATE)
         val existing = prefs.getString("all_notes", "") ?: ""
         val timestamp = java.text.SimpleDateFormat("dd.MM HH:mm", Locale.getDefault()).format(java.util.Date())
-        val newNotes = "$existing\n[$timestamp] $text".trim()
-        prefs.edit().putString("all_notes", newNotes).apply()
-    }
-
-    private fun loadNotes() {
-        // Notes are loaded in NotesActivity
+        prefs.edit().putString("all_notes", "$existing\n[$timestamp] $text".trim()).apply()
     }
 
     private fun callContact(name: String) {
         val prefs = getSharedPreferences("contacts", MODE_PRIVATE)
         val phone = prefs.getString(name.lowercase().trim(), null)
         if (phone != null) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-                == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                 startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:$phone")))
             } else {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CALL_PHONE), 101)
