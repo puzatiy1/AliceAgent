@@ -43,37 +43,37 @@ Installing Android SDK Build-Tools 33.0.1 in /usr/local/lib/android/sdk/build-to
 > Task :app:javaPreCompileRelease
 > Task :app:extractProguardFiles
 > Task :app:mergeReleaseJniLibFolders
-> Task :app:processReleaseManifestForPackage
-> Task :app:processReleaseResources
 > Task :app:mergeReleaseNativeLibs NO-SOURCE
 > Task :app:stripReleaseDebugSymbols NO-SOURCE
 > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
 > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :app:desugarReleaseFileDependencies
+> Task :app:processReleaseManifestForPackage
 > Task :app:checkReleaseDuplicateClasses
-> Task :app:mergeReleaseArtProfile
-
-> Task :app:compileReleaseKotlin
-w: file:///home/runner/work/AliceAgent/AliceAgent/app/src/main/java/com/aiagent/alice/MainActivity.kt:167:37 Parameter 'userText' is never used
-
+> Task :app:desugarReleaseFileDependencies
+> Task :app:processReleaseResources
 > Task :app:mergeExtDexRelease
-> Task :app:compileReleaseJavaWithJavac
-> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseArtProfile
 > Task :app:mergeReleaseShaders
-> Task :app:mergeReleaseGlobalSynthetics
 > Task :app:compileReleaseShaders NO-SOURCE
 > Task :app:generateReleaseAssets UP-TO-DATE
 > Task :app:mergeReleaseAssets
 > Task :app:compressReleaseAssets
-> Task :app:processReleaseJavaRes
-> Task :app:mergeReleaseJavaResource
 > Task :app:collectReleaseDependencies
 > Task :app:sdkReleaseDependencyData
-> Task :app:mergeDexRelease
 > Task :app:validateSigningRelease
 > Task :app:writeReleaseAppMetadata
 > Task :app:writeReleaseSigningConfigVersions
 > Task :app:optimizeReleaseResources
+
+> Task :app:compileReleaseKotlin
+w: file:///home/runner/work/AliceAgent/AliceAgent/app/src/main/java/com/aiagent/alice/MainActivity.kt:167:37 Parameter 'userText' is never used
+
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:processReleaseJavaRes
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeDexRelease
 > Task :app:compileReleaseArtProfile
 > Task :app:packageRelease
 > Task :app:createReleaseApkListingFileRedirect
@@ -82,5 +82,5 @@ w: file:///home/runner/work/AliceAgent/AliceAgent/app/src/main/java/com/aiagent/
 > Task :app:lintVitalRelease
 > Task :app:assembleRelease
 
-BUILD SUCCESSFUL in 1m 29s
+BUILD SUCCESSFUL in 1m 27s
 45 actionable tasks: 45 executed
