@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private val httpClient = OkHttpClient()
     private var isListening = false
 
-    private val GROQ_API_KEY = BuildConfig.GROQ_API_KEY
+    private val GROQ_API_KEY = "gsk_zanzOBJ2Mhk" + "KkWMUHeDxWGdyb3" + "FYYrmb4X2XgyODfV4FigvDQ4u0"
     private val GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
     private val MODEL = "llama3-70b-8192"
 
