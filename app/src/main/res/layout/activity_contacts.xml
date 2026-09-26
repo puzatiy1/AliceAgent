@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0F0F10"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📞 Контакты для звонков"
+        android:textColor="#F0F0F2"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text='Скажи "Позвони [имя]" и агент наберёт номер'
+        android:textColor="#9898A8"
+        android:textSize="13sp"
+        android:layout_marginBottom="16dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/input_bg"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:id="@+id/contactsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F0F0F2"
+            android:textSize="15sp"
+            android:lineSpacingMultiplier="1.8"/>
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/contactNameInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Имя (например: мама)"
+        android:hintTextColor="#9898A8"
+        android:textColor="#F0F0F2"
+        android:background="@drawable/input_bg"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:inputType="text"/>
+
+    <EditText
+        android:id="@+id/contactPhoneInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="+7 900 000 00 00"
+        android:hintTextColor="#9898A8"
+        android:textColor="#F0F0F2"
+        android:background="@drawable/input_bg"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:inputType="phone"/>
+
+    <Button
+        android:id="@+id/saveContactBtn"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="➕ Добавить контакт"
+        android:backgroundTint="#7C6EF5"
+        android:textColor="#FFFFFF"/>
+</LinearLayout>
